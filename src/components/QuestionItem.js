@@ -3,26 +3,39 @@ import React from "react";
 function QuestionItem({ question, onDelete, onCorrectIndexChange }) {
   const { id, prompt, answers, correctIndex } = question;
 
-  const options = answers.map((answer, index) => (
-    <option key={index} value={index}>
-      {answer}
-    </option>
-  ));
+  const handleCorrectIndexChange = (e) => {
+    const newCorrectIndex = parseInt(e.target.value);
+    if (newCorrectIndex !== correctIndex) {
+      onCorrectIndexChange(id, newCorrectIndex);
+    }
+  };
+
+  const handleDeleteClick = () => {
+    onDelete(id);
+  };
 
   return (
-    <li>
+    <li className="question-item">
       <h4>Question {id}</h4>
-      <h5>Prompt: {prompt}</h5>
-      <label>
-        Correct Answer:
-        <select
-          value={correctIndex}
-          onChange={(e) => onCorrectIndexChange(id, parseInt(e.target.value))}
-        >
-          {options}
-        </select>
-      </label>
-      <button onClick={() => onDelete(id)}>Delete Question</button>
+      <div className="question-prompt">
+        <h5>Prompt: {prompt}</h5>
+      </div>
+      <div className="correct-answer">
+        <label>
+          Correct Answer:
+          <select
+            value={correctIndex}
+            onChange={handleCorrectIndexChange}
+          >
+            {answers.map((answer, index) => (
+              <option key={index} value={index}>
+                {answer}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+      <button className="delete-button" onClick={handleDeleteClick}>Delete Question</button>
     </li>
   );
 }

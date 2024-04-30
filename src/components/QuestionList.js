@@ -5,6 +5,7 @@ import QuestionForm from "./QuestionForm";
 function QuestionList() {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -17,7 +18,8 @@ function QuestionList() {
         setQuestions(data);
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching questions:", error);
+        setError(error.message);
+        setLoading(false);
       }
     };
     fetchQuestions();
@@ -38,7 +40,7 @@ function QuestionList() {
       const newQuestion = await response.json();
       setQuestions([...questions, newQuestion]);
     } catch (error) {
-      console.error("Error adding new question:", error);
+      setError(error.message);
     }
   };
 
@@ -52,7 +54,7 @@ function QuestionList() {
       }
       setQuestions(questions.filter((question) => question.id !== id));
     } catch (error) {
-      console.error("Error deleting question:", error);
+      setError(error.message);
     }
   };
 
@@ -74,7 +76,7 @@ function QuestionList() {
         )
       );
     } catch (error) {
-      console.error("Error updating correct answer:", error);
+      setError(error.message);
     }
   };
 
@@ -85,6 +87,8 @@ function QuestionList() {
       <button onClick={() => setLoading(true)}>View Questions</button>
       {loading ? (
         <p>Loading...</p>
+      ) : error ? (
+        <p>Error: {error}</p>
       ) : (
         <ul>
           {questions.map((question) => (
